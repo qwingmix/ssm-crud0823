@@ -18,7 +18,10 @@
   	
   	
   	<plugins>
-  	<plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+  	<plugin interceptor="com.github.pagehelper.PageInterceptor">
+  		<property name="reasonable" value="true"/><!-- 配置了这个以后，就不会出现超过了总页数还会再+1的清空，用在分页导航条 -->
+  	
+  	</plugin>
   	</plugins>
   	
   	

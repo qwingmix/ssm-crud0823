@@ -44,6 +44,96 @@
 
 <body>
 
+
+<!-- 员工添加功能的模态框v.20 -->
+<!-- 下面是【新增】的模态框，直接从boostrap官网上面拿来的界面代码，然后改动。  -->
+<div class="modal fade" id="empAddModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">员工添加</h4>
+      </div>
+      <div class="modal-body">
+      
+<!--       下面是body体内的表单 -->
+
+					<!-- 名字输入框 -->
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">名字</label>
+							<div class="col-sm-10">
+								<input type="text" name="empName" class="form-control" id="empName_add_input"
+									placeholder="empName">
+							</div>
+						</div>
+
+					<!-- 邮件输入框 ,这里面的name属性要跟javabean里面的字段对应，就是pojo那些的字段-->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">邮箱</label>
+							<div class="col-sm-10">
+								<input type="text" name="email" class="form-control" id="email_add_input"
+									placeholder="email@atguigu.com">
+							</div>
+						</div>
+						
+						
+					<!-- 性别选择框 -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">性别</label>
+							<div class="col-sm-10">
+								
+								<!-- 性别这里就不是输入框了，应用了选择按钮。 -->
+								<label class="radio-inline"> <input type="radio" 
+									name="gender" id="gender1_add_input" value="M" checked="checked">
+									男
+								</label> <label class="radio-inline"> <input
+									type="radio" name="gender" id="gender2_add_input"
+									value="F">女
+								</label>
+							</div>
+						</div>
+
+
+
+						<!-- 性别选择框 -->
+						<div class="form-group">
+							<label class="col-sm-2 control-label">部门</label>
+							<div class="col-sm-4">
+								<!-- 部门这里就不是输入框了，而是下拉列表。 -->
+								<!-- 部门提交部门id即可 -->
+									<select class="form-control" name="dId">
+									</select>
+																
+								
+							</div>
+						</div>
+
+
+					</form>
+
+				</div><!-- modal-body的尾巴 -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary">保存</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+ </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<!-- 搭建显示页面，这层div是最底层的容器了。 -->
 	<div class="container">
 		<!--第一行，这里是标题  -->
@@ -57,7 +147,7 @@
 		<!--第二行，这里是按钮  -->
 		<div class="row">
 			<div class="col-md-4 col-md-offset-8">
-				<button class="btn btn-primary">新增</button>
+				<button class="btn btn-primary" id="emp_add_modal_btn">新增</button>
 				<button class="btn btn-danger">删除</button>
 			</div>
 		</div>
@@ -124,7 +214,7 @@
 				build_emps_table(result);
 				
 				//2.解析显示分页信息
-				build_emps_info(result);
+				build_page_info(result);
 				
 				//3.解析显示分页条数据
 				build_page_nav(result);
@@ -132,13 +222,28 @@
 		})
 		}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//下面这里是从json里面拆出所有员工数据
 	
 //-----------------1·解析并显示员工数据------------------------
 	
 	function build_emps_table(result){
-		//清空table表格
-		//$("#emps_table tbody").empty();
+		//因为ajax是页面无刷新的，所以要先清空，不然会重复叠加，页面乱掉。
+		$("#emps_table tbody").empty();
+		
+		
+		
 		var emps = result.extend.pageInfo.list;//这里其实就是json里面的一个个层级的维度名
 		//$.each这个就是遍历函数了
 		$.each(emps,function(index,item){//这里的function就是每次遍历的回调函数。另，这里的每一个emps就是每一个员工
@@ -182,9 +287,12 @@
 	
 	
 	
-	//2.-------------------解析显示分页信息------------------
-	function build_emps_info(result){
+	//2.-------------------2.解析显示分页信息------------------
+	function build_page_info(result){
+		
+		//下面这里也是，先让容器清空，再来加载数据，因为ajax无刷新问题。 
 		$("#page_info_area").empty();
+		
 		$("#page_info_area").append("当前"+result.extend.pageInfo.pageNum
 				+"页,总"+result.extend.pageInfo.pages
 				+"页，总"+result.extend.pageInfo.total+"条记录")
@@ -194,27 +302,86 @@
 	
 
 	
-	//3.--------------------解析显示分页条数据-----------------------------
+	//3.--------------------3.解析显示分页条数据-----------------------------
 	function build_page_nav(result){
 		//page_nav_area
 		
+		//下面这里也是，先让容器清空，再来加载数据，因为ajax无刷新问题。 
+		$("#page_nav_area").empty();
 		
 		//这里应该是导航条真快的父元素
 		var ul = $("<ul></ul>").addClass("pagination");
 		
 		
 		//构建元素,$()这是jquery的知识范畴
-		//首页
+		//******************导航条之首页********************
 		var firstPageLi=$("<li></li>").append($("<a></a>").append("首页").attr("href","#"));
 		
-		//前一页
+		
+		
+		
+		
+		//*******************导航条之上一页********************
+		
+		//善上一页
 		var prePageLi=$("<li></li>").append($("<a></a>").append("&laquo;"));
 		
-		//下一页
+		
+		//-------v.19 如果当前页为第一页，那么首页和前一页设置为无法点击（鼠标变成红色的禁止标识），否则的话，赋予正确的点击逻辑------------
+		if(result.extend.pageInfo.hasPreviousPage == false){
+			firstPageLi.addClass("disabled");
+			prePageLi.addClass("disabled");
+		}else{
+			firstPageLi.click(function(){
+				to_page(1);
+				});
+			
+			prePageLi.click(function(){
+				to_page(result.extend.pageInfo.pageNum -1);
+				});
+
+		}
+		
+		
+		
+		
+		
+		
+		
+		//*******************导航条之下一页********************
+
 		var nextPageLi=$("<li></li>").append($("<a></a>").append("&raquo;"));
 		
-		//末页
+		
+		//*******************导航条之末页********************
+
 		var lastPageLi = $("<li></li>").append($("<a></a>").append("末页").attr("fhrf","#"));
+		
+		
+		//-------v.19 如果当前页为最后一页，那么下一页和最后一页设置为无法点击，否则的话，赋予正确的点击逻辑------------
+		if(result.extend.pageInfo.hasNextPage == false){
+			nextPageLi.addClass("disabled");
+			lastPageLi.addClass("disabled");
+		}else{
+			nextPageLi.click(function(){
+			to_page(result.extend.pageInfo.pageNum+1);
+				
+			});
+			
+			lastPageLi.click(function(){
+			to_page(result.extend.pageInfo.pages);
+				
+			});
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		//添加首页和前一页进去ul容器里面去
 		ul.append(firstPageLi).append(prePageLi);
@@ -225,8 +392,27 @@
 		//一二三四五页码链接,.each是循环，function(index,item)是遍历. 每次遍历的过程，都对ul父容器添加页面链接
 		$.each(result.extend.pageInfo.navigatepageNums,function(index,item){
 		
+			
+			
+			
 			//遍历出来的元素，也是一个个个页码号的点击链接
 			var numLi =  $("<li></li>").append($("<a></a>").append(item));
+			
+			//当前页码链接样式加亮，逻辑-如果当前页面等于我们正在遍历的页面
+			if(result.extend.pageInfo.pageNum == item){
+				numLi.addClass("active");
+			}
+			
+			
+			//这里就是用的ajax请求，点击页面号后去到对应的页
+			numLi.click(function(){
+				to_page(item);
+			});
+			
+			
+			
+
+			
 			ul.append(numLi);//每次遍历的时候，把页码号链接添加到ul容器里边去。
 		}
 		)
@@ -243,8 +429,42 @@
 	}
 	
 	
+	//##############下面开始模态框的事件了####################
+	
+	//点击新增按钮，弹出模态框
+	$("#emp_add_modal_btn").click(function(){
+		
+		//v.21 发送ajax请求，查出部门信息，显示在下拉列表中，但这里为了分离吧，把代码卸载其他地方了。
+		getDepts();
+		
+		
+		//弹出模态框
+		$("#empAddModal").modal({
+			backdrop:"static"
+		});
+	});
+	
+	//v.21 这里就是向数据库查询部门的ajax代码了。 
+	function getDepts(){
+		$.ajax({
+			url:"${APP_PATH}/depts",
+			type:"GET",
+			success:function(result){
+				console.log(result)
+			}
+		})
+	}
 	
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	</script>
 
 </body>
