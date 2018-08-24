@@ -14,7 +14,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>员工列表|SSM-CRUD</title>
+<title>员工列表|Employee Management System</title>
 
 
 
@@ -102,7 +102,7 @@
 							<div class="col-sm-4">
 								<!-- 部门这里就不是输入框了，而是下拉列表。 -->
 								<!-- 部门提交部门id即可 -->
-									<select class="form-control" name="dId">
+									<select class="form-control" name="dId" >
 									</select>
 																
 								
@@ -115,7 +115,7 @@
 				</div><!-- modal-body的尾巴 -->
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary">保存</button>
+        <button type="button" class="btn btn-primary" id="emp_save_btn">保存</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -139,7 +139,7 @@
 		<!--第一行，这里是标题  -->
 		<div class="row">
 			<div class="col-md-12">
-				<h1>SSM-CRUD System</h1>
+				<h1>Employee Management System</h1>
 			</div>
 		</div>
 
@@ -343,11 +343,7 @@
 		}
 		
 		
-		
-		
-		
-		
-		
+
 		//*******************导航条之下一页********************
 
 		var nextPageLi=$("<li></li>").append($("<a></a>").append("&raquo;"));
@@ -375,26 +371,16 @@
 			
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
 		//添加首页和前一页进去ul容器里面去
 		ul.append(firstPageLi).append(prePageLi);
 		
-		
-		
-		
+
 		//一二三四五页码链接,.each是循环，function(index,item)是遍历. 每次遍历的过程，都对ul父容器添加页面链接
 		$.each(result.extend.pageInfo.navigatepageNums,function(index,item){
 		
-			
-			
-			
+
 			//遍历出来的元素，也是一个个个页码号的点击链接
 			var numLi =  $("<li></li>").append($("<a></a>").append(item));
 			
@@ -408,9 +394,7 @@
 			numLi.click(function(){
 				to_page(item);
 			});
-			
-			
-			
+
 
 			
 			ul.append(numLi);//每次遍历的时候，把页码号链接添加到ul容器里边去。
@@ -444,26 +428,36 @@
 		});
 	});
 	
+	
+	
 	//v.21 这里就是向数据库查询部门的ajax代码了。 
 	function getDepts(){
 		$.ajax({
-			url:"${APP_PATH}/depts",
+			url:"${APP_PATH}/depts",//这里首先是会去到前端控制器，收到请求后再转发给service，service也就是dao，去数据库拿东西回来
 			type:"GET",
 			success:function(result){
-				console.log(result)
+				//在浏览器F12看到拿出来的json长这样的，{"code":100,"msg":"哟，赞赞赞，处理成功！","extend":{"depts":[{"deptId":1,"deptName":"研发部"},{"deptId":2,"deptName":"其他部门"}]}}
+				//console.log(result)
+				
+				//显示在下拉列表中
+
+				//"#empAddModal select"，这一整个，就是empAddModal模态框里边的select下拉列表，因为仅有一个下拉列表，就可以这样去定位。
+				$.each(result.extend.depts,function(){//这里是遍历了
+					var optionEle =  $("<option></option>").append(this.deptName).attr("value",this.deptId);//这里的this是当前在遍历的对象，就是其中一个部门啦。 
+					optionEle.appendTo("#empAddModal select");//一定要有分号，不然bug。 这里的意思，就是把上面构建的option标签，增加到模态框的下拉列表上面去
+				});
 			}
-		})
+		});
 	}
 	
+	
+	
+	//点击保存，保存员工。 为保存按钮绑定单击事件
+	
+	
+	
+	
 
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	</script>
 

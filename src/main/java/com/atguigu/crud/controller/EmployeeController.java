@@ -27,6 +27,36 @@ public class EmployeeController {
 	@Autowired
 	EmployeeService employeeService;
 	
+	/**
+	 * 
+	 * @param pn
+	 * @return
+	 */
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@RequestMapping("/emps")
 	@ResponseBody//这个会帮忙生成json格式的数据
